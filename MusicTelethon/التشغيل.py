@@ -67,7 +67,7 @@ async def ytdl(link):
     else:
         return 0, stderr.decode()
 
-@Client.on_message(filters.command(["تشغيل"], prefixes=f"{HNDLR}"))
+@Client.on_message(filters.command(["شغل"], prefixes=f"{HNDLR}"))
 async def play(client, m: Message):
     replied = m.reply_to_message
     chat_id = m.chat.id
@@ -75,7 +75,7 @@ async def play(client, m: Message):
     if replied:
         if replied.audio or replied.voice:
             await m.delete()
-            huehue = await replied.reply("**🔄 جاري التشغيل والمعالجه **")
+            huehue = await replied.reply("**🔄 جاري شغل والمعالجه **")
             dl = await replied.download()
             link = replied.link
             if replied.audio:
@@ -164,7 +164,7 @@ async def play(client, m: Message):
                             await huehue.edit(f"`{ep}`")
 
 
-@Client.on_message(filters.command(["تشغيل_فيديو"], prefixes=f"{HNDLR}"))
+@Client.on_message(filters.command(["فيديو"], prefixes=f"{HNDLR}"))
 async def vplay(client, m: Message):
     replied = m.reply_to_message
     chat_id = m.chat.id
@@ -306,27 +306,27 @@ async def playfrom(client, m: Message):
                     await m.reply_photo(
                         photo="https://te.legra.ph/file/2a726c634dbc3b9e8f451.jpg",
                         caption=f"""
-**▶ ابدأ تشغيل الأغاني من {chat}
+**▶ ابدأ شغل الأغاني من {chat}
  العنوان : [{songname}]({link})
  المحادثه : {chat_id}
  من الطلب : {m.from_user.mention}**
 """,                    )
             await hmm.delete()
-            await m.reply(                f"➕ يضيف {lmt} أغنية في قائمة الانتظار \n• ارسل {HNDLR}التشغيل_التلقائي لاضاف اغنيه في القائمه الانتضار**"            )
+            await m.reply(                f"➕ يضيف {lmt} أغنية في قائمة الانتظار \n• ارسل {HNDLR}شغل_التلقائي لاضاف اغنيه في القائمه الانتضار**"            )
         except Exception as e:
             await hmm.edit(f"**هناك خطا ** \n`{e}`")
 
 
-@Client.on_message(filters.command(["التشغيل التلقائي", "queue"], prefixes=f"{HNDLR}"))
+@Client.on_message(filters.command(["شغل التلقائي", "queue"], prefixes=f"{HNDLR}"))
 async def playlist(client, m: Message):
     chat_id = m.chat.id
     if chat_id in QUEUE:
         chat_queue = get_queue(chat_id)
         if len(chat_queue) == 1:
             await m.delete()
-            await m.reply(                f"**🎧 تشغيل الان :** \n[{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][3]}`",                disable_web_page_preview=True,            )
+            await m.reply(                f"**🎧 شغل الان :** \n[{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][3]}`",                disable_web_page_preview=True,            )
         else:
-            QUE = f"**🎧 تشغيل الان :** \n[{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][3]}` \n\n**⏯ قائمة الانتظار :**"
+            QUE = f"**🎧 شغل الان :** \n[{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][3]}` \n\n**⏯ قائمة الانتظار :**"
             l = len(chat_queue)
             for x in range(1, l):
                 hmm = chat_queue[x][0]
@@ -335,7 +335,7 @@ async def playlist(client, m: Message):
                 QUE = QUE + "\n" + f"**#{x}** - [{hmm}]({hmmm}) | `{hmmmm}`\n"
             await m.reply(QUE, disable_web_page_preview=True)
     else:
-        await m.reply("**❌ لايوجد هناك تشغيل تالي**")
+        await m.reply("**❌ لايوجد هناك شغل تالي**")
 @Client.on_message(filters.command(["التالي"], prefixes=f"{HNDLR}"))
 @authorized_users_only
 async def skip(client, m: Message):
@@ -348,7 +348,7 @@ async def skip(client, m: Message):
         elif op == 1:
             await m.reply("قائمة انتظار فارغة ، مغادرة الدردشة الصوتية**")
         else:
-            await m.reply(                f"**⏭ تخطي التشغيل ** \n**🎧 التشغيل الان** - [{op[0]}]({op[1]}) | `{op[2]}`",                disable_web_page_preview=True,            )
+            await m.reply(                f"**⏭ تخطي شغل ** \n**🎧 شغل الان** - [{op[0]}]({op[1]}) | `{op[2]}`",                disable_web_page_preview=True,            )
     else:
         skip = m.text.split(None, 1)[1]
         OP = "**🗑️ تمت إزالة الأغاني التالية من قائمة الانتظار : -**"
@@ -376,7 +376,7 @@ async def stop(client, m: Message):
         try:
             await call_py.leave_group_call(chat_id)
             clear_queue(chat_id)
-            await m.reply("**✅ تم ايقاف التشغيل بنجاح **")
+            await m.reply("**✅ تم ايقاف شغل بنجاح **")
         except Exception as e:
             await m.reply(f"**هناك خطأ ** \n`{e}`")
     else:
@@ -389,7 +389,7 @@ async def pause(client, m: Message):
     if chat_id in QUEUE:
         try:
             await call_py.pause_stream(chat_id)
-            await m.reply(                f"**⏸ تم إيقاف التشغيل مؤقتًا.**\n\n• يمكنك ارجاع التشغيل بواسطه ارسال امر  » `{HNDLR}ايقاف_الاستئناف`"            )
+            await m.reply(                f"**⏸ تم إيقاف شغل مؤقتًا.**\n\n• يمكنك ارجاع شغل بواسطه ارسال امر  » `{HNDLR}ايقاف_الاستئناف`"            )
         except Exception as e:
             await m.reply(f"**هناك خطأ ** \n`{e}`")
     else:
@@ -402,7 +402,7 @@ async def resume(client, m: Message):
     if chat_id in QUEUE:
         try:
             await call_py.resume_stream(chat_id)
-            await m.reply(                f"**▶ استئناف التشغيل المتوقف مؤقتًا **"            )
+            await m.reply(                f"**▶ استئناف شغل المتوقف مؤقتًا **"            )
         except Exception as e:
             await m.reply(f"**هناك خطأ ** \n`{e}`")
     else:
